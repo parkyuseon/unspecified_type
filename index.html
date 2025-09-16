@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>Unspecified Type. Ver. 한</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
+  <link rel="stylesheet" href="style.css?v=20250915">
+</head>
+<body>
+  <div id="container">
+    <div id="output-area"></div>
+    <div id="input-area">
+        <div id="guide-text">글자 ‘한’을 아래에 써주세요. <br> Write the letter “한” below.</div>
+    </div>
+    <div id="counter-badge">Total: 0</div>
+    <button id="reset-button">Write. 쓰기</button>
+    <div id="parameter-box"></div>
+    <div id="form-box"></div>
+  </div>
+  <script src="input.js"></script>
+  <script src="output.js"></script>
+  <script>
+  (function(){
+    function exportCanvasPNG(target) {
+      const area = document.getElementById(target);
+      const canvas = area ? area.querySelector('canvas') : null;
+      if (!canvas) return;
+      const dataURL = canvas.toDataURL('image/png');
+      const a = document.createElement('a');
+      const ts = new Date().toISOString().replace(/[:.]/g,'-');
+      a.href = dataURL;
+      a.download = target + "-" + ts + ".png";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+    const saveBtn = document.getElementById('save-button');
+    if (saveBtn) saveBtn.addEventListener('click', function(){
+      exportCanvasPNG('output-area');
+      exportCanvasPNG('input-area');
+    });
+  })();
+  </script>
+</body>
+
+<script defer src="./save-utils.js"></script>
+
+
+<script>
+  (function lockPageGestures(){
+    // 입력 영역에서 모든 터치 제스처 → 기본 동작 차단 (스크롤/당김 금지)
+    const ia = document.getElementById('input-area');
+    if (ia) {
+      ['touchstart','touchmove','touchend','touchcancel'].forEach(evt=>{
+        ia.addEventListener(evt, e=> e.preventDefault(), { passive:false });
+      });
+    }
+    // 핀치줌/더블탭 확대 방지
+    document.addEventListener('gesturestart', e=> e.preventDefault(), { passive:false });
+    document.addEventListener('dblclick',     e=> e.preventDefault(), { passive:false });
+  })();
+</script>
+
+</html>
