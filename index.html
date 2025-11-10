@@ -17,6 +17,17 @@
     <div id="parameter-box"></div>
     <div id="form-box"></div>
   </div>
+  <div id="info-button">i</div>
+  <div id="info-modal" class="hidden">
+  <div class="info-panel">
+    <h3>Unspecified Type / Ver. 한</h3>
+    <p>쓰기의 움직임을 바탕으로, 실시간 한글 형태를 생성하는 인터랙티브 작업입니다. 속도와 압력, 방향, 시간 등 쓰기의 제스처 데이터는 벡터 글자로 변환됩니다. 불특정 타입은 쓰기의 움직임이 그대로 반영된 고유한 조형입니다.</p>
+    <p>수집된 쓰기 데이터와 생성된 이미지는 연구 및 작품 고도화를 위해 서버에 저장될 수 있습니다. 개인을 식별할 수 있는 정보는 저장하지 않습니다.</p>
+    <p style="font-size:0.7rem;opacity:.6;">An interactive work that generates new Hangul forms in real time based on the participant’s writing gestures. Data such as speed, pressure, direction, and time are translated into vector-based letters. Unspecified Type represents a unique form that directly reflects the participant’s movement.</p>
+    <p style="font-size:0.7rem;opacity:.6;">Collected writing data and generated images may be stored on the server for research and further development. No personally identifiable information is stored.</p>
+    <button id="info-close">닫기 Close</button>
+  </div>
+</div>
   <script src="input.js"></script>
   <script src="output.js"></script>
   <script>
@@ -60,5 +71,6 @@
     document.addEventListener('dblclick',     e=> e.preventDefault(), { passive:false });
   })();
 </script>
+
 
 </html>
