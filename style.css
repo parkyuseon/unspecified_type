@@ -5,16 +5,14 @@
   src: local('Noto Sans Mono'), url('https://fonts.gstatic.com/s/notosansmono/v27/m8JWjfRfY7WVjVi2E-K9H6lB.woff2') format('woff2');
 } */
 
-/* 페이지 스크롤/고무줄/당김 방지 */
 html, body {
-  overflow: hidden;               /* 전체 스크롤 잠금 */
-  overscroll-behavior: none;      /* 고무줄 방지(지원 브라우저) */
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
-/* 포인터/펜 입력 시 브라우저 제스처 비활성 */
 #output-area, #input-area,
 #output-area canvas, #input-area canvas {
-  touch-action: none;             /* iOS Safari 13+ 지원 */
+  touch-action: none;
 }
 
 html, body, #container {
@@ -102,7 +100,7 @@ canvas {
 /* ===== Enhanced Parameter Panels (boxed bars) ===== */
 #parameter-box, #form-box {
   position: absolute;
-  top: 1rem;
+  top: calc(1.2rem + env(safe-area-inset-top, 0px));
   z-index: 2;
   pointer-events: none;
   max-width: 44vw;
