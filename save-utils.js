@@ -1,7 +1,7 @@
 // save-utils.js — 전시장 로컬용
 // "Write. 쓰기" 1번 누를 때마다
 // 1) 파라미터 패널 숨김
-// 2) 상단/하단 캔버스 합쳐서 2048 정사각 PNG로 다운로드
+// 2) (전시 버전) 이미지 다운로드는 하지 않음
 // 3) 총 관객 수 +1 해서 화면에 표시
 // 4) 그 다음에 input.js에 있는 원래 리셋 로직이 실행됨
 (function () {
@@ -58,11 +58,10 @@
     el.textContent = `Total: ${fmtNum(getTotal())}`;
   }
 
-  /* ---------- 캔버스 도우미 ---------- */
+  /* ---------- 캔버스 도우미 (현재는 사용 안 하지만 남겨둠) ---------- */
   function getOutCanvas() { return $('#output-area canvas'); }
   function getInCanvas()  { return $('#input-area  canvas'); }
 
-  // 위아래 합치기 (흰 배경)
   function stackVertical(cTop, cBottom, pad = 0, bg = '#fff') {
     const w = Math.max(cTop.width, cBottom.width);
     const h = cTop.height + pad + cBottom.height;
@@ -91,7 +90,6 @@
     return c;
   }
 
-  // 정사각 2048로 리사이즈
   function toSquare(srcCanvas, size = 2048, bg = '#fff') {
     const s = document.createElement('canvas');
     s.width = s.height = size;
@@ -143,50 +141,20 @@
     setTimeout(() => URL.revokeObjectURL(url), 800);
   }
 
-  /* ---------- 버튼 클릭 시: 저장 + 카운터 + 리셋 ---------- */
+  /* ---------- 버튼 클릭 시: 카운터 + 리셋 (이미지 다운로드 없음) ---------- */
   let saving = false;
   async function onResetCapture(/* e */) {
     if (saving) return;
-    const top = getOutCanvas();
-    const bot = getInCanvas();
 
-    // 1) 일단 패널 숨기기
+    // 1) 패널 숨김
     hidePanels();
 
-    // 2) 캔버스가 실제로 있으면 저장을 한다
-    if (top && bot) {
-      saving = true;
-      try {
-        const stacked = stackVertical(top, bot, 0, '#fff');
-        const square  = toSquare(stacked, 2048, '#fff');
-        const blob    = await toBlob(square);
-        if (blob) {
-          const n = incTotal();        // 총 관객수 +1
-          updateBadge();
-          const ts = timestamp();
-          // 번호도 파일명에 넣어줌
-          const prefix = Number.isFinite(n) ? `han_${String(n).padStart(4,'0')}_` : 'han_';
-          downloadBlob(blob, `${prefix}${ts}.png`);
-        } else {
-          // blob이 없으면 그래도 카운터만 올림
-          incTotal();
-          updateBadge();
-        }
-      } catch (err) {
-        console.warn('save failed:', err);
-        // 실패해도 카운터는 올려줌
-        incTotal();
-        updateBadge();
-      } finally {
-        saving = false;
-      }
-    } else {
-      // 캔버스 없으면 다운로드는 못하고, 카운터만
-      incTotal();
-      updateBadge();
-    }
+    // 2) 다운로드 없이 카운터만 증가
+    incTotal();
+    updateBadge();
 
-    // 3) 여기서 *preventDefault를 안 해서* input.js 안에 있는 원래 reset 코드가 그대로 실행됨
+    // 3) preventDefault를 걸지 않으므로,
+    //    input.js 안의 reset 버튼 리스너가 그대로 이어서 실행됨
   }
 
   function bind() {
@@ -195,7 +163,7 @@
     const btn = document.getElementById('reset-button');
     if (btn) {
       btn.textContent = 'Write. 쓰기';
-      // capture: true → 우리가 먼저 저장하고, 그 다음 input.js의 리셋이 실행됨
+      // capture: true → 우리가 먼저 onResetCapture 실행, 그 다음 input.js 리셋 실행
       btn.addEventListener('click', onResetCapture, { capture: true, passive: true });
     }
 
