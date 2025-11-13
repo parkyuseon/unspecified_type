@@ -100,7 +100,7 @@ canvas {
 /* ===== Enhanced Parameter Panels (boxed bars) ===== */
 #parameter-box, #form-box {
   position: absolute;
-  top: calc(1.2rem + env(safe-area-inset-top, 0px));
+  top: 2.2rem;
   z-index: 2;
   pointer-events: none;
   max-width: 44vw;
