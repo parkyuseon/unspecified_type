@@ -67,7 +67,9 @@ window.inputP5 = new p5(function (p) {
     if (!strokes.length) return;
 
     const g = calcGesture(strokes);
-    const form = g2form(g);
+    
+    window.latestGesture = g;
+const form = g2form(g);
     form.stage  = computeStage(strokes, null); // 확정 단계
     form.jongSub = (form.stage >= 4) ? 2 : 0;  // 확정 시 ㄴ은 둘 다 보이게
 
