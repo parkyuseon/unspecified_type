@@ -1,17 +1,10 @@
-// save-utils.js — 전시장 로컬용
-// "Write. 쓰기" 1번 누를 때마다
-// 1) 파라미터 패널 숨김
-// 2) (전시 버전) 이미지 다운로드는 하지 않음
-// 3) 총 관객 수 +1 해서 화면에 표시
-// 4) 그 다음에 input.js에 있는 원래 리셋 로직이 실행됨
+
 (function () {
   const $ = (sel, root = document) => root.querySelector(sel);
 
-  /* ---------- Google Sheets + Drive Web App ---------- */
   const SHEETS_ENDPOINT = "https://script.google.com/macros/s/AKfycbzhL3KQ3_XQW05jgahV5dxnWOogiknlTGC16OIabb4ggGhfOC-vewVryehwdauajKcE6Q/exec";
   const SHEETS_TOKEN    = "ut_2025_unspecifiedType_9fA3kL82QmX";
 
-  /* ---------- 패널 숨김/복귀 ---------- */
   function hidePanels() {
     const pb = $('#parameter-box'), fb = $('#form-box');
     if (pb) pb.style.display = 'none';
@@ -23,7 +16,6 @@
     if (fb) fb.style.display = '';
   }
 
-  // output.js 가 그려줄 때마다 다시 보이게 하기
   function hookUpdateOutput() {
     if (typeof window.updateOutput !== 'function') return;
     const orig = window.updateOutput;
@@ -35,7 +27,6 @@
     };
   }
 
-  /* ---------- 카운터(localStorage) ---------- */
   const KS = { totKey: 'hanCounter.total' };
   const fmtNum = n => (n || 0).toLocaleString();
 
@@ -63,7 +54,6 @@
   }
 
 
-/* ---------- 세션/전송(Drive 저장 포함) ---------- */
 function getSessionId() {
   try {
     let id = localStorage.getItem('sessionId');
@@ -118,7 +108,6 @@ async function flushQueue() {
   try { localStorage.setItem('saveQueue', JSON.stringify(rest)); } catch (e) { /* ignore */ }
 }
 
-  /* ---------- 캔버스 도우미 (현재는 사용 안 하지만 남겨둠) ---------- */
   function getOutCanvas() { return $('#output-area canvas'); }
   function getInCanvas()  { return $('#input-area  canvas'); }
 
@@ -201,21 +190,17 @@ async function flushQueue() {
     setTimeout(() => URL.revokeObjectURL(url), 800);
   }
 
-  /* ---------- 버튼 클릭 시: 카운터 + 리셋 (이미지 다운로드 없음) ---------- */
   let saving = false;
   async function onResetCapture() {
   if (saving) return;
 
-  // 1) 패널 숨김
   hidePanels();
 
-  // 2) (추가) output+input을 한 장으로 합쳐서 저장
   const out = getOutCanvas();
   const inp = getInCanvas();
 
   if (out && inp && window.formParams) {
-    // 위=output / 아래=input, 가운데 약간 간격
-    const merged = stackVertical(out, inp, 80, '#fff');   // pad=80은 취향
+    const merged = stackVertical(out, inp, 80, '#fff');
     const square = toSquare(merged, 2048, '#fff');
     const pngBase64 = square.toDataURL('image/png');
 
@@ -236,11 +221,9 @@ async function flushQueue() {
     console.log('[archive] skip: canvas or formParams missing');
   }
 
-  // 3) 카운터 증가(기존대로)
   incTotal();
   updateBadge();
 
-  // 4) input.js의 reset 로직은 그대로 이어서 실행됨
 }
   function bind() {
     hookUpdateOutput();
@@ -248,18 +231,14 @@ async function flushQueue() {
     const btn = document.getElementById('reset-button');
     if (btn) {
       btn.textContent = 'Write. 쓰기';
-      // capture: true → 우리가 먼저 onResetCapture 실행, 그 다음 input.js 리셋 실행
       btn.addEventListener('click', onResetCapture, { capture: true, passive: true });
     }
 
-    // 초기 Total 표기
     updateBadge();
 
-    // 저장 큐 재전송(오프라인 대비)
     window.addEventListener('load', flushQueue);
     window.addEventListener('online', flushQueue);
 
-    // 정보 모달 토글 (있으면)
     const infoBtn   = document.getElementById('info-button');
     const infoModal = document.getElementById('info-modal');
     const infoClose = document.getElementById('info-close');

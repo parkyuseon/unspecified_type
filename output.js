@@ -1,4 +1,3 @@
-// output.js — 자동 중앙정렬, 흰 배경, SQUARE/MITER, slant, scale, 그룹 단계+jongSub 렌더(ㄴ은 한 번에 이어 그리기)
 
 window.outputP5 = new p5(function (p) {
   p.setup = function () {
@@ -47,7 +46,6 @@ function measureBBox(pm) {
   return { minX, minY, maxX, maxY };
 }
 
-/* 메인 렌더 */
 function drawGlyph(p, pm) {
   const bb = measureBBox(pm);
   const cx = (bb.minX + bb.maxX) / 2;
@@ -55,14 +53,14 @@ function drawGlyph(p, pm) {
 
   p.push();
   p.translate(p.width / 2 - cx, p.height / 2 - cy);
-  p.scale(0.9); // 선명도 유지 축소
+  p.scale(0.9);
   const slant = safe(pm.strokeSlantDeg, 0);
   if (slant) p.shearX(p.radians(slant));
 
   p.stroke(0);
   p.strokeCap(p.SQUARE);
   p.strokeJoin(p.MITER);
-  p.drawingContext.miterLimit = 3.0; // 코너가 깨지지 않도록 여유
+  p.drawingContext.miterLimit = 3.0;
 
   const stage = Number(pm.stage) || Infinity;
 
@@ -82,7 +80,6 @@ function drawGlyph(p, pm) {
   p.pop();
 }
 
-/* 파트 렌더러 */
 function drawChoTopShort(p, pm){
   if (pm.cho_top_mode === "horizontal") {
     p.strokeWeight(Math.max(2, safe(pm.cho_top_weight, 8) * 0.9));
@@ -117,7 +114,6 @@ function drawJungH(p, pm){
   p.line(safe(pm.jung_h_x1), safe(pm.jung_h_y1), safe(pm.jung_h_x2), safe(pm.jung_h_y2));
 }
 
-// ㄴ — 수직만(프리뷰용)
 function drawJongV(p, pm){
   const w = Math.max(2, safe(pm.jong_weight_unified, 10));
   p.noFill();
@@ -125,12 +121,10 @@ function drawJongV(p, pm){
   p.line(safe(pm.jong_v_x1), safe(pm.jong_v_y1), safe(pm.jong_v_x2), safe(pm.jong_v_y2));
 }
 
-// ㄴ — 수직+수평을 하나의 폴리라인으로(끊김 없이 이어 그리기)
 function drawJongJoined(p, pm){
   const x1 = safe(pm.jong_v_x1), y1 = safe(pm.jong_v_y1);
   const x2 = safe(pm.jong_v_x2), y2 = safe(pm.jong_v_y2);
   const x3 = safe(pm.jong_h_x2);
-  // 수평의 y는 모서리 y와 정확히 같게 맞춰 연결
   const yCorner = y2;
 
   const w  = Math.max(2, safe(pm.jong_weight_unified, 10));
@@ -184,7 +178,6 @@ const UI = (() => {
   };
 })();
 
-/* 외부에서 호출 */
 window.updateOutput = function (gesture, form) {
   if (typeof UI !== 'undefined' && UI.update) UI.update(gesture || {}, form || {});
   if (window.outputP5 && window.outputP5.redraw) window.outputP5.redraw();
