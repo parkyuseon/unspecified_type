@@ -3,11 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Unspecified Type</title>
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Unspecified Type">
-  <link rel="apple-touch-icon" href="icon.png">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.min.js"></script>
   <link rel="stylesheet" href="style.css?v=20250915">
 </head>
@@ -33,6 +28,8 @@
     <button id="info-close">닫기 Close</button>
   </div>
 </div>
+  <script src="features.js"></script>
+  <script src="layout.js"></script>
   <script src="input.js"></script>
   <script src="output.js"></script>
   <script>
@@ -64,12 +61,14 @@
 
 <script>
   (function lockPageGestures(){
+    // 입력 영역에서 모든 터치 제스처 → 기본 동작 차단 (스크롤/당김 금지)
     const ia = document.getElementById('input-area');
     if (ia) {
       ['touchstart','touchmove','touchend','touchcancel'].forEach(evt=>{
         ia.addEventListener(evt, e=> e.preventDefault(), { passive:false });
       });
     }
+    // 핀치줌/더블탭 확대 방지
     document.addEventListener('gesturestart', e=> e.preventDefault(), { passive:false });
     document.addEventListener('dblclick',     e=> e.preventDefault(), { passive:false });
   })();
